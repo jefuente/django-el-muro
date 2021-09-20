@@ -5,7 +5,6 @@ urlpatterns = [
     path('registro', auth.registro),
     path('login/', auth.login),
     path('logout', auth.logout),
-
     path('mensaje/crear', views.mensaje_crear),
     path('mensaje/comentario', views.comentario_crear),
     path('comentario/<int:val>/borrar', views.comentario_borrar),
