@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block titulo %}INDEX USUARIO{% endblock %}
+{% block style %}
+
+{% endblock %}
+
+{% block contenido %}
+{% include "menu.html"%}
+
+<div class="container mt-5">
+    <h3>Post a message</h3>
+    <form action="/mensaje/crear" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="text" class="form-control" id="inputDescription" name='mensaje'>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-primary me-md-2">Post a message</button>
+        </div>
+    </form>
+    
+
+    <div class="row">
+        <div class="col-sm-12 registros">
+            {% for m in mensajes reversed%}
+            <div class="row mt-1">
+                <h4>{{m.user.first_name}} {{m.user.last_name}} - {{m.created_at | date:"F d, Y" }}</h4>
+                <div class="container mensajes">
+                    <h5>{{m.mensaje}}</h5>
+                    {% if request.session.usuario.id == m.user.id %}
+                    <div class="d-flex justify-content-end my-auto">
+                        <a id="borrar" class="btn btn-outline-danger btn-sm mx-4 my-auto"
+                            href="/mensaje/{{m.id}}/borrar">Delete</a>
+                    </div>
+                    {% endif %}
+
+                    <div class="container">
+                    <div class="container">
+                        {% for c in m.comentarios.all %}
+                        <div class="row">
+                            <h4>{{c.user.first_name}} {{c.user.last_name}} - {{c.created_at |  date:"F d, Y" }}</h4>
+                            <div class="container mensajes">
+                                <h5>{{c.comentario}}</h5>
+                            </div>
+                            {% if request.session.usuario.id == c.user.id %}
+                            <div class="d-flex justify-content-end">
+                                <a class="btn btn-danger btn-sm mt-1" href="/comentario/{{c.id}}/borrar">Delete</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="container mt-3">
+                        <form action="/mensaje/comentario" method="post">
+                            {% csrf_token %}
+                            <h5>Post a comment</h5>
+                            <div class="mb-1">
+                                <input type="text" class="form-control" id="inputDescription" name='comentario'>
+                            </div>
+                            <input type="hidden" name="id_mensaje_comentario" value="{{m.id}}">
+                            <div class="d-flex justify-content-end">
+                                <br>
+                                <button type="submit" class="btn btn-primary me-md-2">Post a comment</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block libreria %}
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
